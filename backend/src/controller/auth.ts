@@ -25,7 +25,7 @@ export const registerRouter = router.post('/register', async (req: Request<{}, {
     await user.save();
 
     const payload = { user: { id: user.id } };
-    jwt.sign(payload,`${JWT_SECRET}`, { expiresIn: '1h' }, (err: any, token: any) => {
+    jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: '1h' }, (err: any, token: any) => {
       if (err) throw err;
       res.json({ token });
     });
@@ -35,3 +35,33 @@ export const registerRouter = router.post('/register', async (req: Request<{}, {
 });
 
 // Login 
+router.post('/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const payload = { user: { id: user.id } };
+    jwt.sign(payload, `${JWT_SECRET}`, { expiresIn: '1h' }, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({ token });
+    });
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Logout
+router.post('/logout', (req: Request, res: Response) => {
+  res.json({ msg: 'Logged out successfully' });
+});
+
+export default router;
