@@ -16,6 +16,7 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string>('');
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchProjects();
@@ -23,8 +24,8 @@ const Dashboard: React.FC = () => {
 
   const fetchProjects = async () => {
     try {
-      console.log('Fetching projects'); // Debug log
-      const res = await axios.get<Project[]>('/api/projects');
+      console.log(`Fetching projects from ${apiUrl}/api/projects`); // Debug log
+      const res = await axios.get<Project[]>(`${apiUrl}/api/projects`);
       setProjects(res.data);
     } catch (err: any) {
       setError(err.response?.data?.msg || 'Error fetching projects');
@@ -34,8 +35,8 @@ const Dashboard: React.FC = () => {
   const createProject = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log('Creating project:', { name: newProjectName }); // Debug log
-      const res = await axios.post<Project>('/api/projects', { name: newProjectName });
+      console.log(`Creating project at ${apiUrl}/api/projects:`, { name: newProjectName }); // Debug log
+      const res = await axios.post<Project>(`${apiUrl}/api/projects`, { name: newProjectName });
       setProjects([...projects, res.data]);
       setNewProjectName('');
     } catch (err: any) {
@@ -46,7 +47,8 @@ const Dashboard: React.FC = () => {
   const deleteProject = async (id: string) => {
     if (window.confirm('Delete project?')) {
       try {
-        await axios.delete(`/api/projects/${id}`);
+        console.log(`Deleting project at ${apiUrl}/api/projects/${id}`); // Debug log
+        await axios.delete(`${apiUrl}/api/projects/${id}`);
         setProjects(projects.filter((p) => p._id !== id));
       } catch (err: any) {
         setError(err.response?.data?.msg || 'Error deleting project');

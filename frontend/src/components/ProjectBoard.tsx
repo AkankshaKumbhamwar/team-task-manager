@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 interface User {
   _id: string;
@@ -52,8 +53,8 @@ const ProjectBoard: React.FC = () => {
 
   const fetchTasks = async () => {
     try {
-      console.log('Fetching tasks for project:', id); 
-      const res = await axios.get<Task[]>(`/api/tasks/${id}`);
+      console.log('Fetching tasks for project:', id);
+      const res = await axios.get<Task[]>(`${apiUrl}/api/tasks/${id}`);
       setTasks(res.data);
     } catch (err: any) {
       setError(err.response?.data?.msg || 'Error fetching tasks');
@@ -62,7 +63,7 @@ const ProjectBoard: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get<User[]>('/api/projects/users');
+      const res = await axios.get<User[]>(`${apiUrl}/api/projects/users`);
       setUsers(res.data);
     } catch (err: any) {
       setError(err.response?.data?.msg || 'Error fetching users');
@@ -73,7 +74,7 @@ const ProjectBoard: React.FC = () => {
     e.preventDefault();
     try {
       console.log('Creating task:', { title: newTaskTitle, description: newTaskDescription, assignee: newTaskAssignee, dueDate: newTaskDueDate, project: id }); // Debug log
-      const res = await axios.post<Task>(`/api/tasks/`, {
+      const res = await axios.post<Task>(`${apiUrl}/api/tasks/`, {
         title: newTaskTitle,
         description: newTaskDescription,
         assignee: newTaskAssignee || undefined,
@@ -94,7 +95,7 @@ const ProjectBoard: React.FC = () => {
   const updateTaskStatus = async (taskId: string, newStatus: 'To Do' | 'In Progress' | 'Done') => {
     try {
       console.log('Updating task status:', { taskId, newStatus }); // Debug log
-      const res = await axios.put<Task>(`/api/tasks/${taskId}`, { status: newStatus });
+      const res = await axios.put<Task>(`${apiUrl}/api/tasks/${taskId}`, { status: newStatus });
       setTasks(tasks.map((t) => (t._id === taskId ? res.data : t)));
     } catch (err: any) {
       setError(err.response?.data?.msg || 'Error updating task');
@@ -104,7 +105,7 @@ const ProjectBoard: React.FC = () => {
   const deleteTask = async (taskId: string) => {
     if (window.confirm('Delete task?')) {
       try {
-        await axios.delete(`/api/tasks/${taskId}`);
+        await axios.delete(`${apiUrl}/api/tasks/${taskId}`);
         setTasks(tasks.filter((t) => t._id !== taskId));
       } catch (err: any) {
         setError(err.response?.data?.msg || 'Error deleting task');

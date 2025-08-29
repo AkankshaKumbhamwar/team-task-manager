@@ -29,13 +29,14 @@ interface DecodedToken {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const apiUrl = process.env.REACT_APP_API_URL ;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const decoded: DecodedToken = jwtDecode(token); 
-        setUser({ id: decoded.user.id, email: '', name: '' }); 
+        const decoded: DecodedToken = jwtDecode(token);
+        setUser({ id: decoded.user.id, email: '', name: '' });
         axios.defaults.headers.common['x-auth-token'] = token;
       } catch (err) {
         console.error('Invalid token:', err);
@@ -47,32 +48,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string): Promise<void> => {
     try {
-      const res = await axios.post<{ token: string }>('http://localhost:5000/api/auth/login', { email, password });
+      console.log(`Login API call to ${apiUrl}/api/auth/login`);
+      const res = await axios.post<{ token: string }>(`${apiUrl}/api/auth/login`, { email, password });
       localStorage.setItem('token', res.data.token);
-      const decoded: DecodedToken = jwtDecode(res.data.token); 
-      setUser({ id: decoded.user.id, email, name: '' }); 
+      const decoded: DecodedToken = jwtDecode(res.data.token);
+      setUser({ id: decoded.user.id, email, name: '' });
       axios.defaults.headers.common['x-auth-token'] = res.data.token;
     } catch (err: any) {
       throw new Error('Invalid credentials');
     }
   };
 
-const register = async (email: string, password: string, name: string): Promise<void> => {
-  try {
-    console.log('Register API call to /api/auth/register'); 
-    const res = await axios.post<{ token: string }>('/api/auth/register', { email, password, name });
-    localStorage.setItem('token', res.data.token);
-    const decoded: DecodedToken = jwtDecode(res.data.token);
-    setUser({ id: decoded.user.id, email, name });
-    axios.defaults.headers.common['x-auth-token'] = res.data.token;
-  } catch (err: any) {
-    throw new Error('Registration failed');
-  }
-};
+  const register = async (email: string, password: string, name: string): Promise<void> => {
+    try {
+      const res = await axios.post<{ token: string }>(`${apiUrl}/api/auth/register`, { email, password, name });
+      localStorage.setItem('token', res.data.token);
+      const decoded: DecodedToken = jwtDecode(res.data.token);
+      setUser({ id: decoded.user.id, email, name });
+      axios.defaults.headers.common['x-auth-token'] = res.data.token;
+    } catch (err: any) {
+      throw new Error('Registration failed');
+    }
+  };
 
   const logout = async (): Promise<void> => {
     try {
-      await axios.post('/api/auth/logout');
+      await axios.post(`${apiUrl}/api/auth/logout`);
     } catch (err) {
       console.error('Logout error:', err);
     }
