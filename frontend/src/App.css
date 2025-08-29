@@ -406,7 +406,7 @@ main {
 /* Input fields */
 .login-form input {
   width: 100%;
-  padding: 10px 14px;
+  padding: 10px 1px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
