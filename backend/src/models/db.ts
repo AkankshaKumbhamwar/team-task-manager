@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import dotenv from "dotenv"
 import { MONGO_URI } from '../utils/envConfig';
 
 const connectDB = async (): Promise<any> => {
