@@ -6,7 +6,7 @@ import { JWT_SECRET } from '../utils/envConfig';
 
 dotenv.config();
 
-const router: Router = express.Router();
+export const authRouter: Router = express.Router();
 
 interface RegisterBody {
   email: string;
@@ -15,7 +15,7 @@ interface RegisterBody {
 }
 
 // Sign up
-export const registerRouter = router.post('/register', async (req: Request<{}, {}, RegisterBody>, res: Response) => {
+authRouter.post('/register', async (req: Request<{}, {}, RegisterBody>, res: Response) => {
   const { email, password, name } = req.body;
   try {
     let user = await User.findOne({ email });
@@ -35,7 +35,7 @@ export const registerRouter = router.post('/register', async (req: Request<{}, {
 });
 
 // Login 
-router.post('/login', async (req: Request, res: Response) => {
+authRouter.post('/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -60,8 +60,6 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // Logout
-router.post('/logout', (req: Request, res: Response) => {
+authRouter.post('/logout', (req: Request, res: Response) => {
   res.json({ msg: 'Logged out successfully' });
 });
-
-export default router;
