@@ -29,8 +29,8 @@ cd backend
 npm install -f
 
 Create a .env file in the backend/ directory with:
-MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/trello_lite?retryWrites=true&w=majority
-JWT_SECRET=your_jwt_secret
+MONGO_URI=mongodb+srv://kumbhamwar2001_db_user:r0MZWKrBtvTs650k@cluster0.uc8y21q.mongodb.net/
+JWT_SECRET=jkfjkadswedda
 
 Generate a JWT_SECRET using a tool like openssl rand -hex 32.
 
@@ -72,9 +72,9 @@ Deployment
 The app is deployed using free-tier services for a working hosted demo.
 Deployed URLs
 
-Frontend: https://trello-lite-frontend.vercel.app (replace with your Vercel URL)
-Backend: https://trello-lite-backend.onrender.com (replace with your Render URL)
-Database: MongoDB Atlas (M0 free cluster)
+Frontend: https://team-task-manager-l6iliumjj-akanksha-kumbhamwars-projects.vercel.app
+Backend: https://team-task-manager-8n3n.onrender.com
+Database: mongodb+srv://kumbhamwar2001_db_user:r0MZWKrBtvTs650k@cluster0.uc8y21q.mongodb.net/
 
 Deployment Instructions
 
@@ -91,8 +91,8 @@ Backend (Render):
 Sign up at render.com.
 Create a new web service, connect your GitHub repo (backend/ directory).
 Set environment variables:
-MONGO_URI: Your MongoDB Atlas URI.
-JWT_SECRET: Your JWT secret.
+MONGO_URI: mongodb+srv://kumbhamwar2001_db_user:r0MZWKrBtvTs650k@cluster0.uc8y21q.mongodb.net/.
+JWT_SECRET:--.
 
 
 Build Command: npm install
@@ -114,7 +114,7 @@ Deploy and get the frontend URL (e.g., https://trello-lite-frontend.vercel.app).
 Update CORS:
 
 In backend/server.ts, set CORS to allow the Vercel frontend URL:import cors from 'cors';
-app.use(cors({ origin: 'https://trello-lite-frontend.vercel.app' }));
+app.use(cors({ origin: 'https://team-task-manager-l6iliumjj-akanksha-kumbhamwars-projects.vercel.app' }));
 
 
 Push changes to trigger a redeploy on Render.
